@@ -2,8 +2,16 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import { motion } from "motion/react";
 import { MapPin, Briefcase, Award, CheckCircle2, TrendingUp } from "lucide-react";
+import { useState } from "react";
 
 export function ResumesSection() {
   const candidates = [
@@ -113,6 +121,11 @@ export function ResumesSection() {
     },
   ];
 
+  const [selectedCandidate, setSelectedCandidate] = useState<(typeof candidates)[number] | null>(null);
+
+  const getCandidateSummary = (candidate: (typeof candidates)[number]) =>
+    `${candidate.name} tem perfil ${candidate.type}, atua como ${candidate.role} e combina com vagas que valorizam ${candidate.skills.slice(0, 2).join(" e ")}. A disponibilidade e a experiencia indicam um bom encaixe para processos seletivos em andamento.`;
+
   return (
     <section id="currículos" className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -202,7 +215,14 @@ export function ResumesSection() {
                   </div>
                 </div>
 
-                <Button size="sm" className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <Button
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setSelectedCandidate(candidate);
+                  }}
+                >
                   Ver Perfil Completo
                 </Button>
               </Card>
@@ -210,6 +230,124 @@ export function ResumesSection() {
           ))}
         </div>
       </div>
+
+      <Dialog open={!!selectedCandidate} onOpenChange={(open) => !open && setSelectedCandidate(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+          {selectedCandidate && (
+            <>
+              <DialogHeader className="gap-4">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                  <Avatar className="h-24 w-24 ring-4 ring-purple-500/20">
+                    <AvatarImage src={selectedCandidate.avatar} alt={selectedCandidate.name} />
+                    <AvatarFallback>
+                      {selectedCandidate.name.split(" ").map((name) => name[0]).join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <DialogTitle className="text-2xl">{selectedCandidate.name}</DialogTitle>
+                    <DialogDescription className="mt-2 text-base">
+                      {selectedCandidate.role}
+                    </DialogDescription>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Badge variant="secondary" className="gap-1">
+                        <Briefcase className="h-3 w-3" />
+                        {selectedCandidate.company}
+                      </Badge>
+                      <Badge variant="secondary" className="gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {selectedCandidate.location}
+                      </Badge>
+                      <Badge variant="secondary" className="gap-1">
+                        <Award className="h-3 w-3" />
+                        {selectedCandidate.experience}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </DialogHeader>
+
+              <div className="grid gap-5 md:grid-cols-[1fr_240px]">
+                <div className="space-y-5">
+                  <Card className="p-5">
+                    <h3 className="mb-2 font-semibold text-card-foreground">Resumo profissional</h3>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {getCandidateSummary(selectedCandidate)}
+                    </p>
+                  </Card>
+
+                  <Card className="p-5">
+                    <h3 className="mb-3 font-semibold text-card-foreground">Experiencia</h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="rounded-lg border border-border p-3">
+                        <p className="font-medium text-card-foreground">{selectedCandidate.role}</p>
+                        <p className="text-muted-foreground">
+                          {selectedCandidate.company} - {selectedCandidate.experience} de experiencia
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-border p-3">
+                        <p className="font-medium text-card-foreground">Disponibilidade</p>
+                        <p className="text-muted-foreground">
+                          {selectedCandidate.availability} para iniciar novas conversas.
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="p-5">
+                    <h3 className="mb-3 font-semibold text-card-foreground">Habilidades e qualidades</h3>
+                    <div className="mb-4 flex flex-wrap gap-2">
+                      {selectedCandidate.skills.map((skill) => (
+                        <Badge key={skill} className="bg-blue-50 text-blue-700 hover:bg-blue-50 dark:bg-blue-950/30 dark:text-blue-300">
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedCandidate.qualities.map((quality) => (
+                        <Badge key={quality} variant="outline" className="border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950/30 dark:text-purple-300">
+                          {quality}
+                        </Badge>
+                      ))}
+                    </div>
+                  </Card>
+                </div>
+
+                <aside className="space-y-5">
+                  <Card className="p-5">
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-sm font-medium text-muted-foreground">Compatibilidade</span>
+                      <span className="text-2xl font-bold text-green-600">
+                        {selectedCandidate.compatibility}%
+                      </span>
+                    </div>
+                    <div className="h-3 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-green-500 to-emerald-500"
+                        style={{ width: `${selectedCandidate.compatibility}%` }}
+                      />
+                    </div>
+                    <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                      Pontuacao baseada em experiencia, habilidades, disponibilidade e aderencia ao perfil da vaga.
+                    </p>
+                  </Card>
+
+                  <Card className="p-5">
+                    <h3 className="mb-3 font-semibold text-card-foreground">Acoes rapidas</h3>
+                    <div className="space-y-2">
+                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700">
+                        Salvar candidato
+                      </Button>
+                      <Button variant="outline" className="w-full">
+                        Chamar para entrevista
+                      </Button>
+                    </div>
+                  </Card>
+                </aside>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
