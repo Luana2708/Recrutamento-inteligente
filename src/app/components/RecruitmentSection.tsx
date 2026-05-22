@@ -1,10 +1,10 @@
-import { Card } from "./ui/card";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Badge } from "./ui/badge";
-import { motion } from "motion/react";
-import { Search, MapPin, Briefcase, Award, TrendingUp } from "lucide-react";
 import { useState } from "react";
+import { motion } from "motion/react";
+import { Award, Briefcase, MapPin, Search, TrendingUp } from "lucide-react";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import {
   Dialog,
@@ -13,75 +13,82 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import type { Job } from "../types";
 
-export function RecruitmentSection() {
+type RecruitmentSectionProps = {
+  createdJobs: Job[];
+};
+
+const defaultJobs: Job[] = [
+  {
+    title: "Desenvolvedor Full Stack Sênior",
+    company: "TechCorp Inc.",
+    location: "São Paulo, SP",
+    type: "CLT",
+    experience: "5-8 anos",
+    skills: ["React", "Node.js", "TypeScript", "AWS"],
+    compatibility: 92,
+    applicants: 47,
+    area: "tecnologia",
+  },
+  {
+    title: "Gerente de Produtos",
+    company: "Innovate Solutions",
+    location: "Remoto",
+    type: "PJ",
+    experience: "3-5 anos",
+    skills: ["Product Management", "Agile", "Data Analysis"],
+    compatibility: 87,
+    applicants: 32,
+    area: "gestao",
+  },
+  {
+    title: "Designer UX/UI",
+    company: "Creative Studio",
+    location: "Rio de Janeiro, RJ",
+    type: "CLT",
+    experience: "2-4 anos",
+    skills: ["Figma", "User Research", "Prototyping"],
+    compatibility: 95,
+    applicants: 28,
+    area: "criativo",
+  },
+  {
+    title: "Analista de Marketing Digital",
+    company: "Growth Marketing Co.",
+    location: "Belo Horizonte, MG",
+    type: "CLT",
+    experience: "1-3 anos",
+    skills: ["SEO", "Google Ads", "Analytics", "Social Media"],
+    compatibility: 78,
+    applicants: 53,
+    area: "marketing",
+  },
+  {
+    title: "Executivo de Vendas",
+    company: "Sales Pro",
+    location: "Curitiba, PR",
+    type: "CLT",
+    experience: "3-5 anos",
+    skills: ["B2B Sales", "CRM", "Negociação"],
+    compatibility: 84,
+    applicants: 41,
+    area: "vendas",
+  },
+];
+
+export function RecruitmentSection({ createdJobs }: RecruitmentSectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArea, setSelectedArea] = useState("all");
   const [selectedExperience, setSelectedExperience] = useState("all");
-
-  const jobs = [
-    {
-      title: "Desenvolvedor Full Stack Sênior",
-      company: "TechCorp Inc.",
-      location: "São Paulo, SP",
-      type: "CLT",
-      experience: "5-8 anos",
-      skills: ["React", "Node.js", "TypeScript", "AWS"],
-      compatibility: 92,
-      applicants: 47,
-      area: "tecnologia",
-    },
-    {
-      title: "Gerente de Produtos",
-      company: "Innovate Solutions",
-      location: "Remote",
-      type: "PJ",
-      experience: "3-5 anos",
-      skills: ["Product Management", "Agile", "Data Analysis"],
-      compatibility: 87,
-      applicants: 32,
-      area: "gestão",
-    },
-    {
-      title: "Designer UX/UI",
-      company: "Creative Studio",
-      location: "Rio de Janeiro, RJ",
-      type: "CLT",
-      experience: "2-4 anos",
-      skills: ["Figma", "User Research", "Prototyping"],
-      compatibility: 95,
-      applicants: 28,
-      area: "criativo",
-    },
-    {
-      title: "Analista de Marketing Digital",
-      company: "Growth Marketing Co.",
-      location: "Belo Horizonte, MG",
-      type: "CLT",
-      experience: "1-3 anos",
-      skills: ["SEO", "Google Ads", "Analytics", "Social Media"],
-      compatibility: 78,
-      applicants: 53,
-      area: "marketing",
-    },
-    {
-      title: "Executivo de Vendas",
-      company: "Sales Pro",
-      location: "Curitiba, PR",
-      type: "CLT",
-      experience: "3-5 anos",
-      skills: ["B2B Sales", "CRM", "Negociação"],
-      compatibility: 84,
-      applicants: 41,
-      area: "vendas",
-    },
-  ];
-
-  const [selectedJob, setSelectedJob] = useState<(typeof jobs)[number] | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const jobs = [...createdJobs, ...defaultJobs];
 
   const filteredJobs = jobs.filter((job) => {
-    const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.company.toLowerCase().includes(searchTerm.toLowerCase());
+    const normalizedSearch = searchTerm.toLowerCase();
+    const matchesSearch =
+      job.title.toLowerCase().includes(normalizedSearch) ||
+      job.company.toLowerCase().includes(normalizedSearch);
     const matchesArea = selectedArea === "all" || job.area === selectedArea;
     const matchesExperience = selectedExperience === "all" || job.experience.includes(selectedExperience);
     return matchesSearch && matchesArea && matchesExperience;
@@ -128,7 +135,7 @@ export function RecruitmentSection() {
                 <SelectContent>
                   <SelectItem value="all">Todas as áreas</SelectItem>
                   <SelectItem value="tecnologia">Tecnologia</SelectItem>
-                  <SelectItem value="gestão">Gestão</SelectItem>
+                  <SelectItem value="gestao">Gestão</SelectItem>
                   <SelectItem value="criativo">Criativo</SelectItem>
                   <SelectItem value="marketing">Marketing</SelectItem>
                   <SelectItem value="vendas">Vendas</SelectItem>
@@ -152,7 +159,7 @@ export function RecruitmentSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {filteredJobs.map((job, i) => (
             <motion.div
-              key={i}
+              key={`${job.company}-${job.title}-${i}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -160,7 +167,7 @@ export function RecruitmentSection() {
               whileHover={{ scale: 1.02 }}
             >
               <Card className="p-6 h-full cursor-pointer hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-500/50 bg-card">
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-4 gap-4">
                   <div>
                     <h3 className="text-xl font-semibold text-card-foreground mb-1">{job.title}</h3>
                     <p className="text-muted-foreground">{job.company}</p>
@@ -194,8 +201,8 @@ export function RecruitmentSection() {
                 <div className="mb-4">
                   <p className="text-sm text-muted-foreground mb-2">Habilidades necessárias:</p>
                   <div className="flex flex-wrap gap-2">
-                    {job.skills.map((skill, idx) => (
-                      <Badge key={idx} variant="outline" className="bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
+                    {job.skills.map((skill) => (
+                      <Badge key={skill} variant="outline" className="bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                         {skill}
                       </Badge>
                     ))}
@@ -204,11 +211,7 @@ export function RecruitmentSection() {
 
                 <div className="flex justify-between items-center pt-4 border-t border-border">
                   <span className="text-sm text-muted-foreground">{job.applicants} candidatos</span>
-                  <Button
-                    size="sm"
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                    onClick={() => setSelectedJob(job)}
-                  >
+                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" onClick={() => setSelectedJob(job)}>
                     Ver Detalhes
                   </Button>
                 </div>
@@ -240,7 +243,8 @@ export function RecruitmentSection() {
                   <div>
                     <h3 className="mb-2 font-semibold text-card-foreground">Resumo da vaga</h3>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      Esta oportunidade busca uma pessoa com experiência de {selectedJob.experience}, domínio das principais habilidades listadas e disponibilidade para avançar rapidamente no processo seletivo.
+                      {selectedJob.description ||
+                        `Esta oportunidade busca uma pessoa com experiência de ${selectedJob.experience}, domínio das principais habilidades listadas e disponibilidade para avançar rapidamente no processo seletivo.`}
                     </p>
                   </div>
                   <div>
@@ -251,6 +255,11 @@ export function RecruitmentSection() {
                       ))}
                     </div>
                   </div>
+                  {selectedJob.contactEmail && (
+                    <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
+                      Contato da empresa: {selectedJob.contactEmail}
+                    </div>
+                  )}
                   <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
                     A compatibilidade considera aderência técnica, senioridade, localização, tipo de contrato e histórico de candidatos aprovados para vagas semelhantes.
                   </div>
