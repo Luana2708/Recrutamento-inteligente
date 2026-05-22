@@ -9,24 +9,27 @@ import { BlogSection } from "./components/BlogSection";
 import { Footer } from "./components/Footer";
 import { Chatbot } from "./components/Chatbot";
 import { NotificationSystem } from "./components/NotificationSystem";
+import { ButtonActionDialog } from "./components/ButtonActionDialog";
 
 export default function App() {
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-background">
-        <NotificationSystem />
-        <Header />
-        <main>
-          <HeroSection />
-          <BenefitsSection />
-          <RecruitmentSection />
-          <ResumesSection />
-          <DashboardSection />
-          <BlogSection />
-        </main>
-        <Footer />
-        <Chatbot />
-      </div>
+      <ButtonActionDialog>
+        <div className="min-h-screen bg-background">
+          <NotificationSystem />
+          <Header />
+          <main>
+            <HeroSection />
+            <BenefitsSection />
+            <RecruitmentSection />
+            <ResumesSection />
+            <DashboardSection />
+            <BlogSection />
+          </main>
+          <Footer />
+          <Chatbot />
+        </div>
+      </ButtonActionDialog>
     </ThemeProvider>
   );
 }
