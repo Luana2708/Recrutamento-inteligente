@@ -1,69 +1,84 @@
+import { useMemo, useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { motion } from "motion/react";
 import { Calendar, Clock, User, ArrowRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+
+const posts = [
+  {
+    title: "Como a IA está revolucionando o recrutamento em 2026",
+    excerpt: "Descubra as principais tendências de inteligência artificial aplicadas ao RH e como elas estão transformando processos seletivos.",
+    category: "Inteligência Artificial",
+    author: "Ana Silva",
+    date: "10 Mai 2026",
+    readTime: "5 min",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop",
+  },
+  {
+    title: "10 dicas para criar um currículo que se destaca",
+    excerpt: "Aprenda as melhores práticas para elaborar um currículo profissional que chama atenção de recrutadores e sistemas de IA.",
+    category: "Carreira",
+    author: "Carlos Mendes",
+    date: "08 Mai 2026",
+    readTime: "7 min",
+    image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=450&fit=crop",
+  },
+  {
+    title: "Soft Skills: as habilidades mais valorizadas em 2026",
+    excerpt: "Conheça as competências comportamentais que as empresas mais buscam e como desenvolvê-las para se destacar no mercado.",
+    category: "Desenvolvimento",
+    author: "Mariana Costa",
+    date: "05 Mai 2026",
+    readTime: "6 min",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=450&fit=crop",
+  },
+  {
+    title: "Entrevista remota: guia completo para candidatos",
+    excerpt: "Dicas essenciais para se preparar e se destacar em entrevistas de emprego realizadas online com confiança.",
+    category: "Recrutamento",
+    author: "Rafael Santos",
+    date: "03 Mai 2026",
+    readTime: "8 min",
+    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=450&fit=crop",
+  },
+  {
+    title: "Diversidade e inclusão: tendências em RH",
+    excerpt: "Como empresas estão implementando práticas de D&I e os benefícios para os negócios e equipes.",
+    category: "RH",
+    author: "Juliana Oliveira",
+    date: "01 Mai 2026",
+    readTime: "9 min",
+    image: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=800&h=450&fit=crop",
+  },
+  {
+    title: "Produtividade no trabalho: técnicas comprovadas",
+    excerpt: "Métodos práticos e ferramentas para aumentar sua produtividade e alcançar melhores resultados profissionais.",
+    category: "Produtividade",
+    author: "Pedro Almeida",
+    date: "28 Abr 2026",
+    readTime: "5 min",
+    image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=450&fit=crop",
+  },
+];
+
+const categories = ["Todos", "RH", "Recrutamento", "Inteligência Artificial", "Carreira", "Produtividade", "Desenvolvimento"];
 
 export function BlogSection() {
-  const posts = [
-    {
-      title: "Como a IA está revolucionando o recrutamento em 2026",
-      excerpt: "Descubra as principais tendências de inteligência artificial aplicadas ao RH e como elas estão transformando processos seletivos.",
-      category: "Inteligência Artificial",
-      author: "Ana Silva",
-      date: "10 Mai 2026",
-      readTime: "5 min",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop",
-    },
-    {
-      title: "10 dicas para criar um currículo que se destaca",
-      excerpt: "Aprenda as melhores práticas para elaborar um currículo profissional que chama atenção de recrutadores e sistemas de IA.",
-      category: "Carreira",
-      author: "Carlos Mendes",
-      date: "08 Mai 2026",
-      readTime: "7 min",
-      image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=450&fit=crop",
-    },
-    {
-      title: "Soft Skills: as habilidades mais valorizadas em 2026",
-      excerpt: "Conheça as competências comportamentais que as empresas mais buscam e como desenvolvê-las para se destacar no mercado.",
-      category: "Desenvolvimento",
-      author: "Mariana Costa",
-      date: "05 Mai 2026",
-      readTime: "6 min",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=450&fit=crop",
-    },
-    {
-      title: "Entrevista remota: guia completo para candidatos",
-      excerpt: "Dicas essenciais para se preparar e se destacar em entrevistas de emprego realizadas online com confiança.",
-      category: "Recrutamento",
-      author: "Rafael Santos",
-      date: "03 Mai 2026",
-      readTime: "8 min",
-      image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=450&fit=crop",
-    },
-    {
-      title: "Diversidade e inclusão: tendências em RH",
-      excerpt: "Como empresas estão implementando práticas de D&I e os benefícios para os negócios e equipes.",
-      category: "RH",
-      author: "Juliana Oliveira",
-      date: "01 Mai 2026",
-      readTime: "9 min",
-      image: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?w=800&h=450&fit=crop",
-    },
-    {
-      title: "Produtividade no trabalho: técnicas comprovadas",
-      excerpt: "Métodos práticos e ferramentas para aumentar sua produtividade e alcançar melhores resultados profissionais.",
-      category: "Produtividade",
-      author: "Pedro Almeida",
-      date: "28 Abr 2026",
-      readTime: "5 min",
-      image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=450&fit=crop",
-    },
-  ];
-
-  const categories = ["Todos", "RH", "Recrutamento", "Inteligência Artificial", "Carreira", "Produtividade", "Desenvolvimento"];
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedPost, setSelectedPost] = useState<(typeof posts)[number] | null>(null);
+  const filteredPosts = useMemo(
+    () => posts.filter((post) => selectedCategory === "Todos" || post.category === selectedCategory),
+    [selectedCategory],
+  );
 
   return (
     <section id="blog" className="py-24 bg-background">
@@ -88,12 +103,13 @@ export function BlogSection() {
           viewport={{ once: true }}
           className="flex flex-wrap gap-3 justify-center mb-12"
         >
-          {categories.map((category, i) => (
+          {categories.map((category) => (
             <Button
-              key={i}
-              variant={i === 0 ? "default" : "outline"}
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
               size="sm"
-              className={i === 0 ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" : ""}
+              className={selectedCategory === category ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white" : ""}
+              onClick={() => setSelectedCategory(category)}
             >
               {category}
             </Button>
@@ -101,9 +117,9 @@ export function BlogSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post, i) => (
+          {filteredPosts.map((post, i) => (
             <motion.div
-              key={i}
+              key={post.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -130,7 +146,7 @@ export function BlogSection() {
                     {post.excerpt}
                   </p>
 
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4 pt-4 border-t border-border">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4 pt-4 border-t border-border">
                     <div className="flex items-center gap-1">
                       <User className="w-4 h-4" />
                       <span>{post.author}</span>
@@ -145,7 +161,11 @@ export function BlogSection() {
                     </div>
                   </div>
 
-                  <Button variant="ghost" className="w-full justify-between group">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-between group"
+                    onClick={() => setSelectedPost(post)}
+                  >
                     Ler mais
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -161,12 +181,49 @@ export function BlogSection() {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <Button size="lg" variant="outline" className="group">
+          <Button
+            size="lg"
+            variant="outline"
+            className="group"
+            onClick={() => setSelectedCategory("Todos")}
+          >
             Ver todos os artigos
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Button>
         </motion.div>
       </div>
+
+      <Dialog open={!!selectedPost} onOpenChange={(open) => !open && setSelectedPost(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+          {selectedPost && (
+            <>
+              <DialogHeader>
+                <Badge className="w-fit bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                  {selectedPost.category}
+                </Badge>
+                <DialogTitle className="text-2xl">{selectedPost.title}</DialogTitle>
+                <DialogDescription>
+                  Por {selectedPost.author} - {selectedPost.date} - {selectedPost.readTime} de leitura
+                </DialogDescription>
+              </DialogHeader>
+              <ImageWithFallback
+                src={selectedPost.image}
+                alt={selectedPost.title}
+                className="h-56 w-full rounded-lg object-cover"
+              />
+              <div className="space-y-4 text-sm leading-6 text-muted-foreground">
+                <p>{selectedPost.excerpt}</p>
+                <p>
+                  Em uma versão completa, este artigo aprofundaria boas práticas, exemplos práticos e recomendações para empresas e candidatos aplicarem o tema no dia a dia.
+                </p>
+                <p>
+                  A ideia é manter o blog como uma área educativa da plataforma, fortalecendo confiança e ajudando cada público a usar melhor os recursos de recrutamento inteligente.
+                </p>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

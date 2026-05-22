@@ -6,6 +6,13 @@ import { motion } from "motion/react";
 import { Search, MapPin, Briefcase, Award, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 
 export function RecruitmentSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,6 +76,8 @@ export function RecruitmentSection() {
       area: "vendas",
     },
   ];
+
+  const [selectedJob, setSelectedJob] = useState<(typeof jobs)[number] | null>(null);
 
   const filteredJobs = jobs.filter((job) => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -195,7 +204,11 @@ export function RecruitmentSection() {
 
                 <div className="flex justify-between items-center pt-4 border-t border-border">
                   <span className="text-sm text-muted-foreground">{job.applicants} candidatos</span>
-                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                    onClick={() => setSelectedJob(job)}
+                  >
                     Ver Detalhes
                   </Button>
                 </div>
@@ -210,6 +223,52 @@ export function RecruitmentSection() {
           </div>
         )}
       </div>
+
+      <Dialog open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)}>
+        <DialogContent className="sm:max-w-2xl">
+          {selectedJob && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selectedJob.title}</DialogTitle>
+                <DialogDescription>
+                  {selectedJob.company} - {selectedJob.location} - {selectedJob.type}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-5 md:grid-cols-[1fr_220px]">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="mb-2 font-semibold text-card-foreground">Resumo da vaga</h3>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      Esta oportunidade busca uma pessoa com experiência de {selectedJob.experience}, domínio das principais habilidades listadas e disponibilidade para avançar rapidamente no processo seletivo.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="mb-2 font-semibold text-card-foreground">Habilidades avaliadas pela IA</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedJob.skills.map((skill) => (
+                        <Badge key={skill} variant="secondary">{skill}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
+                    A compatibilidade considera aderência técnica, senioridade, localização, tipo de contrato e histórico de candidatos aprovados para vagas semelhantes.
+                  </div>
+                </div>
+
+                <aside className="rounded-xl border border-border bg-muted/30 p-5">
+                  <p className="text-sm text-muted-foreground">Compatibilidade média</p>
+                  <p className="mt-1 text-4xl font-bold text-green-600">{selectedJob.compatibility}%</p>
+                  <p className="mt-4 text-sm text-muted-foreground">{selectedJob.applicants} candidatos inscritos</p>
+                  <Button className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700">
+                    Candidatar-se
+                  </Button>
+                </aside>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

@@ -12,6 +12,7 @@ import {
 import { motion } from "motion/react";
 import { MapPin, Briefcase, Award, CheckCircle2, TrendingUp } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function ResumesSection() {
   const candidates = [
@@ -127,7 +128,7 @@ export function ResumesSection() {
     `${candidate.name} tem perfil ${candidate.type}, atua como ${candidate.role} e combina com vagas que valorizam ${candidate.skills.slice(0, 2).join(" e ")}. A disponibilidade e a experiencia indicam um bom encaixe para processos seletivos em andamento.`;
 
   return (
-    <section id="currículos" className="py-24 bg-background">
+    <section id="curriculos" className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -334,10 +335,21 @@ export function ResumesSection() {
                   <Card className="p-5">
                     <h3 className="mb-3 font-semibold text-card-foreground">Acoes rapidas</h3>
                     <div className="space-y-2">
-                      <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700">
+                      <Button
+                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+                        onClick={() => toast.success("Candidato salvo", {
+                          description: `${selectedCandidate.name} entrou na sua lista de talentos.`,
+                        })}
+                      >
                         Salvar candidato
                       </Button>
-                      <Button variant="outline" className="w-full">
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => toast.success("Entrevista solicitada", {
+                          description: `${selectedCandidate.name} foi adicionado à lista de próximos contatos.`,
+                        })}
+                      >
                         Chamar para entrevista
                       </Button>
                     </div>

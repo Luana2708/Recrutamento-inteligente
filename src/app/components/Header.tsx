@@ -8,7 +8,14 @@ export function Header() {
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const menuItems = ["Início", "Recrutamento", "Currículos", "Dashboard", "Blog"];
+  const menuItems = [
+    { label: "Início", href: "#inicio" },
+    { label: "Recrutamento", href: "#recrutamento" },
+    { label: "Currículos", href: "#curriculos" },
+    { label: "Simulador", href: "#simulador" },
+    { label: "Dashboard", href: "#dashboard" },
+    { label: "Blog", href: "#blog" },
+  ];
 
   return (
     <motion.header
@@ -17,9 +24,11 @@ export function Header() {
       className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border"
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <motion.div
+        <motion.a
+          href="#inicio"
           className="flex items-center gap-2 cursor-pointer"
           whileHover={{ scale: 1.05 }}
+          aria-label="Ir para o início"
         >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
@@ -28,20 +37,20 @@ export function Header() {
             <h1 className="font-bold text-foreground">SmartHire AI</h1>
             <p className="text-xs text-muted-foreground">Recrutamento Inteligente</p>
           </div>
-        </motion.div>
+        </motion.a>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-7" aria-label="Navegação principal">
           {menuItems.map((item, i) => (
             <motion.a
-              key={item}
-              href={`#${item.toLowerCase()}`}
+              key={item.href}
+              href={item.href}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               whileHover={{ y: -2 }}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              {item}
+              {item.label}
             </motion.a>
           ))}
         </nav>
@@ -52,6 +61,7 @@ export function Header() {
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="rounded-full"
+            aria-label={theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro"}
           >
             {theme === "dark" ? (
               <Sun className="w-5 h-5" />
@@ -59,7 +69,14 @@ export function Header() {
               <Moon className="w-5 h-5" />
             )}
           </Button>
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={mobileMenuOpen}
+          >
             <Menu className="w-5 h-5" />
           </Button>
         </div>
@@ -69,17 +86,17 @@ export function Header() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="md:hidden border-t border-border bg-background"
+          className="lg:hidden border-t border-border bg-background"
         >
-          <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
+          <nav className="container mx-auto px-4 py-4 flex flex-col gap-4" aria-label="Navegação mobile">
             {menuItems.map((item) => (
               <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
+                key={item.href}
+                href={item.href}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                {item}
+                {item.label}
               </a>
             ))}
           </nav>

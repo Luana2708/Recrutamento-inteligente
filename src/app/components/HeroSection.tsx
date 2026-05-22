@@ -1,10 +1,34 @@
+import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
 import { motion } from "motion/react";
-import { Sparkles, TrendingUp, Users, Brain } from "lucide-react";
+import { Sparkles, TrendingUp, Users, Brain, Building2, UserRound, ArrowDown } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+
+type SignupMode = "company" | "candidate" | "learn" | null;
 
 export function HeroSection() {
+  const [signupMode, setSignupMode] = useState<SignupMode>(null);
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 20 }, () => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        delay: Math.random() * 2,
+      })),
+    [],
+  );
+
   return (
-    <section id="início" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+    <section id="inicio" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-blue-950 dark:from-blue-950 dark:via-purple-950 dark:to-black" />
 
       <div className="absolute inset-0 opacity-20">
@@ -13,13 +37,13 @@ export function HeroSection() {
       </div>
 
       <div className="absolute inset-0 opacity-10">
-        {[...Array(20)].map((_, i) => (
+        {stars.map((star, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: star.left,
+              top: star.top,
             }}
             animate={{
               opacity: [0.2, 1, 0.2],
@@ -28,7 +52,7 @@ export function HeroSection() {
             transition={{
               duration: 3,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: star.delay,
             }}
           />
         ))}
@@ -73,13 +97,27 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
           >
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0"
+              onClick={() => setSignupMode("company")}
+            >
               Cadastrar Empresa
             </Button>
-            <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20">
+            <Button
+              size="lg"
+              variant="outline"
+              className="bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20"
+              onClick={() => setSignupMode("candidate")}
+            >
               Cadastrar Candidato
             </Button>
-            <Button size="lg" variant="ghost" className="text-white hover:bg-white/10">
+            <Button
+              size="lg"
+              variant="ghost"
+              className="text-white hover:bg-white/10"
+              onClick={() => setSignupMode("learn")}
+            >
               Saiba Mais
             </Button>
           </motion.div>
@@ -118,6 +156,91 @@ export function HeroSection() {
           <div className="w-1.5 h-3 bg-white/50 rounded-full mx-auto" />
         </div>
       </motion.div>
+
+      <Dialog open={!!signupMode} onOpenChange={(open) => !open && setSignupMode(null)}>
+        <DialogContent className="sm:max-w-xl">
+          {signupMode === "company" && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-blue-600" />
+                  Cadastro de empresa
+                </DialogTitle>
+                <DialogDescription>
+                  Preencha os dados principais para iniciar uma avaliação de recrutamento com IA.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="company-name">Empresa</Label>
+                  <Input id="company-name" placeholder="Nome da empresa" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company-email">E-mail corporativo</Label>
+                  <Input id="company-email" type="email" placeholder="rh@empresa.com" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="company-role">Primeira vaga</Label>
+                  <Textarea id="company-role" placeholder="Ex.: Desenvolvedor Full Stack, remoto, React e Node.js" />
+                </div>
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700">
+                  Solicitar demonstração
+                </Button>
+              </div>
+            </>
+          )}
+
+          {signupMode === "candidate" && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <UserRound className="h-5 w-5 text-purple-600" />
+                  Cadastro de candidato
+                </DialogTitle>
+                <DialogDescription>
+                  Crie um perfil inicial para receber recomendações de vagas compatíveis.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="candidate-name">Nome completo</Label>
+                  <Input id="candidate-name" placeholder="Seu nome" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="candidate-email">E-mail</Label>
+                  <Input id="candidate-email" type="email" placeholder="voce@email.com" />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="candidate-skills">Habilidades</Label>
+                  <Textarea id="candidate-skills" placeholder="Ex.: React, atendimento, liderança, Power BI" />
+                </div>
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700">
+                  Analisar perfil
+                </Button>
+              </div>
+            </>
+          )}
+
+          {signupMode === "learn" && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <ArrowDown className="h-5 w-5 text-blue-600" />
+                  Como o SmartHire AI funciona
+                </DialogTitle>
+                <DialogDescription>
+                  A plataforma combina triagem automatizada, ranking de compatibilidade e indicadores para decisões mais rápidas.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-3 text-sm text-muted-foreground">
+                <p>1. Empresas cadastram vagas com requisitos técnicos, comportamentais e modelo de trabalho.</p>
+                <p>2. Candidatos informam experiências, habilidades e disponibilidade.</p>
+                <p>3. A IA calcula compatibilidade, destaca riscos e organiza prioridades para o recrutador.</p>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "check": "npm run validate && npm run build",
     "dev": "vite",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate": "node scripts/validate-content.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

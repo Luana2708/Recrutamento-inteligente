@@ -67,6 +67,8 @@ export function Chatbot() {
           size="icon"
           className="w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-2xl"
           onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "Fechar assistente virtual" : "Abrir assistente virtual"}
+          aria-expanded={isOpen}
         >
           {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
         </Button>
@@ -135,12 +137,14 @@ export function Chatbot() {
                     placeholder="Digite sua mensagem..."
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                    onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                    aria-label="Mensagem para o assistente virtual"
                   />
                   <Button
                     size="icon"
                     className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
                     onClick={handleSend}
+                    aria-label="Enviar mensagem"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
